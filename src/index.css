@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* All animations only touch transform / opacity so weak TV browsers stay smooth. */
+
+body {
+  background-color: #05020a;
+  color: white;
+  margin: 0;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+
+.halloween-bg {
+  background: radial-gradient(ellipse at 50% 0%, #2a0f45 0%, #13071f 45%, #05020a 100%);
+}
+
+.title-creepy {
+  font-family: "Creepster", "Outfit", cursive;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+h1.title-creepy {
+  text-shadow: 0 0 18px rgba(249, 115, 22, 0.65), 0 6px 0 #431407, 0 12px 30px rgba(0, 0, 0, 0.9);
+  animation: flicker 7s infinite;
+}
+
+.rules-banner {
+  background: linear-gradient(180deg, #6d28d9 0%, #3b0764 100%);
+  border-color: rgba(249, 115, 22, 0.55);
+  box-shadow: 0 0 70px rgba(168, 85, 247, 0.45);
+}
+
+.prize-card {
+  background: rgba(20, 8, 32, 0.9);
+  border-color: rgba(168, 85, 247, 0.25);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+}
+.prize-card-hit {
+  border-color: #f97316;
+}
+.monster-badge {
+  width: 76px;
+  height: 76px;
+  flex-shrink: 0;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.25);
+}
+
+.hub {
+  width: 100px;
+  height: 100px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 40% 35%, #fdba74 0%, #f97316 45%, #c2410c 100%);
+  border: 8px solid #1c0a00;
+  box-shadow: 0 0 40px rgba(249, 115, 22, 0.8);
+}
+
+/* Rim bulbs */
+.bulb { animation: blink 1.2s steps(1) infinite; }
+.bulb-b { animation-delay: 0.6s; }
+.wheel-spinning .bulb { animation-duration: 0.3s; }
+.wheel-spinning .bulb-b { animation-delay: 0.15s; }
+
+/* Moon */
+.moon {
+  position: absolute;
+  top: 6%;
+  right: 7%;
+  width: 16vmin;
+  height: 16vmin;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde68a 55%, #f59e0b 100%);
+  box-shadow: 0 0 80px 20px rgba(253, 230, 138, 0.25);
+  opacity: 0.85;
+}
+
+/* Fog: two wide gradient strips sliding sideways */
+.fog {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  height: 40%;
+  bottom: -5%;
+  will-change: transform;
+  pointer-events: none;
+}
+.fog-1 {
+  background: radial-gradient(ellipse at 25% 70%, rgba(167, 139, 250, 0.16) 0%, rgba(167, 139, 250, 0) 50%),
+    radial-gradient(ellipse at 75% 70%, rgba(167, 139, 250, 0.16) 0%, rgba(167, 139, 250, 0) 50%);
+  animation: drift 40s linear infinite;
+}
+.fog-2 {
+  bottom: -12%;
+  background: radial-gradient(ellipse at 10% 60%, rgba(132, 204, 22, 0.1) 0%, rgba(132, 204, 22, 0) 45%),
+    radial-gradient(ellipse at 60% 60%, rgba(132, 204, 22, 0.1) 0%, rgba(132, 204, 22, 0) 45%);
+  animation: drift 60s linear infinite reverse;
+}
+
+.graveyard {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 18%;
+}
+
+/* Bats flying across the screen */
+.bat { position: absolute; left: 0; will-change: transform; pointer-events: none; }
+.bat-1 { top: 18%; animation: fly 16s linear infinite; }
+.bat-2 { top: 34%; animation: fly 22s linear infinite 6s; transform: translateX(-200px); }
+.bat-3 { top: 9%;  animation: fly-back 19s linear infinite 3s; transform: translateX(-200px); }
+
+.spider { animation: dangle 5s ease-in-out infinite; transform-origin: top center; }
+
+.float-icon { animation: bob 1.6s ease-in-out infinite; }
+
+/* Occasional lightning flash */
+.lightning {
+  position: absolute;
+  inset: 0;
+  background: #c4b5fd;
+  opacity: 0;
+  pointer-events: none;
+  animation: lightning 19s infinite;
+  will-change: opacity;
+}
+
+.result-win {
+  background: linear-gradient(180deg, #ea580c 0%, #9a3412 100%);
+  border-color: #fde68a;
+  box-shadow: 0 0 120px rgba(249, 115, 22, 0.55);
+}
+.result-lose {
+  background: linear-gradient(180deg, #1e1b2e 0%, #0b0712 100%);
+  border-color: #4d7c0f;
+  box-shadow: 0 0 100px rgba(132, 204, 22, 0.25);
+}
+
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } }
+@keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes fly {
+  0%   { transform: translate(-150px, 0); }
+  25%  { transform: translate(25vw, -30px); }
+  50%  { transform: translate(50vw, 20px); }
+  75%  { transform: translate(75vw, -25px); }
+  100% { transform: translate(110vw, 0); }
+}
+@keyframes fly-back {
+  0%   { transform: translate(110vw, 0) scaleX(-1); }
+  50%  { transform: translate(50vw, 30px) scaleX(-1); }
+  100% { transform: translate(-150px, 0) scaleX(-1); }
+}
+@keyframes dangle {
+  0%, 100% { transform: translateY(-30px) rotate(-3deg); }
+  50% { transform: translateY(10px) rotate(3deg); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-4deg); }
+  50% { transform: translateY(-10px) rotate(4deg); }
+}
+@keyframes flicker {
+  0%, 92%, 100% { opacity: 1; }
+  93% { opacity: 0.4; }
+  94% { opacity: 1; }
+  96% { opacity: 0.6; }
+  97% { opacity: 1; }
+}
+@keyframes lightning {
+  0%, 88%, 100% { opacity: 0; }
+  89% { opacity: 0.35; }
+  90% { opacity: 0; }
+  91% { opacity: 0.25; }
+  92% { opacity: 0; }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

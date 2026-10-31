@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ROLETA HALLOWEEN - CHEERS O BAR</title>
+    <style>
+      body { background-color: #000; margin: 0; }
+      #root:empty::before {
+        content: 'A CARREGAR...';
+        color: #f97316;
+        font-family: sans-serif;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        letter-spacing: 0.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
