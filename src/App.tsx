@@ -7,7 +7,11 @@ import { PRIZES, Prize, MISS_SHOUTS } from './types';
 import { BRAND_LOGOS } from './brandLogos';
 import { sfx, startTicks } from './sound';
 
-const WINS = PRIZES.filter((p) => p.isWin);
+// One card per sport (football has two slices on the wheel).
+const byId = (id: number) => PRIZES[id];
+const FEATURED = [byId(0), byId(2)]; // Futebol, Padel
+const OTHERS = [byId(4), byId(8), byId(10)]; // Ténis, Basket, F1
+const slicesOf = (p: Prize) => PRIZES.filter((x) => x.sport === p.sport).length;
 
 export default function App() {
   const [rotation, setRotation] = useState(0);
@@ -118,8 +122,24 @@ export default function App() {
     </div>
   );
 
+  const renderFeatured = (prize: Prize) => (
+    <div key={prize.id} className="prize-card featured-card rounded-3xl p-5 flex items-center gap-6" style={{ borderColor: prize.color }}>
+      <div className="sport-badge featured-badge rounded-full flex items-center justify-center" style={{ background: prize.color }}>
+        <SportIcon id={prize.sport!} size={82} />
+      </div>
+      <div className="flex flex-col">
+        <span className="font-display text-white text-[64px] tracking-wide uppercase leading-[0.9]">{prize.name}</span>
+        <span className={`font-extrabold text-[34px] leading-none uppercase ${prize.award === 'Régua' ? 'text-yellow-300' : 'text-emerald-300'}`}>
+          {prize.award}
+          {slicesOf(prize) > 1 && <span className="x2-chip ml-3">{slicesOf(prize)}× NA RODA</span>}
+          {prize.award === 'Régua' && <span className="x2-chip ml-3">PRÉMIO MÁXIMO</span>}
+        </span>
+      </div>
+    </div>
+  );
+
   const tickerText =
-    'PEDE UMA RÉGUA OU UM METRO PARA GIRAR  ●  RÉGUA (5 FINOS) = 1 GIRO  ●  METRO (11 FINOS) = 2 GIROS  ●  FUTEBOL, PADEL E TÉNIS: 3 FINOS  ●  BASQUETEBOL E DARDOS: 1 FINO  ●  FÓRMULA 1: RÉGUA  ●  CHEERS SPORTS & COCKTAIL BAR  ●  ';
+    'PEDE UMA RÉGUA OU UM METRO PARA GIRAR  ●  RÉGUA (5 FINOS) = 1 GIRO  ●  METRO (11 FINOS) = 2 GIROS  ●  PADEL: RÉGUA  ●  FUTEBOL E TÉNIS: 3 FINOS  ●  BASQUETEBOL E FÓRMULA 1: 1 FINO  ●  FUTEBOL E PADEL EM DIRETO NO CHEERS  ●  CHEERS SPORTS & COCKTAIL BAR  ●  ';
 
   return (
     <div className="stadium-bg overflow-hidden cursor-none select-none" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
@@ -160,11 +180,11 @@ export default function App() {
 
         {/* Game stage */}
         <div className="flex-1 w-full flex items-center justify-between px-6 relative">
-          <div className="w-[360px] flex flex-col gap-4 text-left z-20">
+          <div className="w-[380px] flex flex-col gap-5 text-left z-20">
             <div className="panel-head panel-head-l">
-              <h3 className="font-display text-4xl tracking-widest uppercase text-white">Prémios · 1ª parte</h3>
+              <h3 className="font-display text-4xl tracking-wider uppercase text-white whitespace-nowrap">Favoritos do Cheers</h3>
             </div>
-            {WINS.slice(0, 3).map((prize) => renderCard(prize, 'left'))}
+            {FEATURED.map(renderFeatured)}
           </div>
 
           <div className="relative flex items-center justify-center">
@@ -176,9 +196,9 @@ export default function App() {
 
           <div className="w-[360px] flex flex-col gap-4 text-right z-20">
             <div className="panel-head panel-head-r">
-              <h3 className="font-display text-4xl tracking-widest uppercase text-white">Prémios · 2ª parte</h3>
+              <h3 className="font-display text-4xl tracking-widest uppercase text-white">Mais prémios</h3>
             </div>
-            {WINS.slice(3, 6).map((prize) => renderCard(prize, 'right'))}
+            {OTHERS.map((prize) => renderCard(prize, 'right'))}
           </div>
         </div>
 

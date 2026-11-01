@@ -56,20 +56,6 @@ export const SportShapes: React.FC<{ id: SportId }> = ({ id }) => {
           <ellipse cx="34" cy="28" rx="9" ry="5" fill="#ffffff" opacity="0.35" transform="rotate(-35 34 28)" />
         </g>
       );
-    case 'dardos':
-      return (
-        <g>
-          <circle cx="46" cy="54" r="40" fill="#111827" />
-          <circle cx="46" cy="54" r="34" fill="#16a34a" />
-          <circle cx="46" cy="54" r="30" fill="#fef3c7" />
-          <circle cx="46" cy="54" r="22" fill="#dc2626" />
-          <circle cx="46" cy="54" r="18" fill="#fef3c7" />
-          <circle cx="46" cy="54" r="8" fill="#16a34a" />
-          <circle cx="46" cy="54" r="4" fill="#dc2626" />
-          <path d="M46 54 L86 14" stroke="#e5e7eb" strokeWidth="4" strokeLinecap="round" />
-          <path d="M80 10 L92 8 L90 20 Z M78 22 L92 20 L84 28 Z" fill="#facc15" />
-        </g>
-      );
     case 'f1':
     default:
       return (
