@@ -49,6 +49,64 @@ function tone(freq: number, start: number, dur: number, type: OscillatorType = '
   }
 }
 
+function whistle(start: number, dur: number) {
+  const c = ac();
+  if (!c) return;
+  try {
+    const t = c.currentTime + start;
+    const o = c.createOscillator();
+    const lfo = c.createOscillator();
+    const lfoGain = c.createGain();
+    const g = c.createGain();
+    o.type = 'sine';
+    o.frequency.setValueAtTime(2900, t);
+    lfo.frequency.setValueAtTime(38, t);
+    lfoGain.gain.setValueAtTime(140, t);
+    lfo.connect(lfoGain);
+    lfoGain.connect(o.frequency);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.08, t + 0.02);
+    g.gain.setValueAtTime(0.08, t + dur - 0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g);
+    g.connect(c.destination);
+    o.start(t);
+    lfo.start(t);
+    o.stop(t + dur + 0.02);
+    lfo.stop(t + dur + 0.02);
+  } catch {
+    /* ignore */
+  }
+}
+
+function crowd(dur: number) {
+  const c = ac();
+  if (!c) return;
+  try {
+    const len = Math.floor(c.sampleRate * dur);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = c.createBufferSource();
+    src.buffer = buf;
+    const bp = c.createBiquadFilter();
+    bp.type = 'bandpass';
+    bp.frequency.value = 900;
+    bp.Q.value = 0.6;
+    const g = c.createGain();
+    const t = c.currentTime;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.12, t + 0.35);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(bp);
+    bp.connect(g);
+    g.connect(c.destination);
+    src.start(t);
+  } catch {
+    /* ignore */
+  }
+}
+
 export const sfx = {
   unlock() {
     ac();
@@ -57,14 +115,17 @@ export const sfx = {
     tone(1400, 0, 0.035, 'square', 0.04);
   },
   win() {
-    // spooky-but-happy arpeggio (minor -> major)
-    [392, 466, 587, 784, 988].forEach((f, i) => tone(f, i * 0.09, 0.35, 'triangle', 0.12));
-    tone(1175, 0.5, 0.7, 'triangle', 0.1);
+    // stadium fanfare + crowd roar
+    [523, 659, 784, 1047].forEach((f, i) => tone(f, i * 0.11, 0.3, 'square', 0.06));
+    tone(1047, 0.45, 0.8, 'square', 0.06);
+    tone(784, 0.45, 0.8, 'square', 0.04);
+    crowd(1.8);
   },
   lose() {
-    // descending "wah wah wah" + ghostly wobble
-    [330, 311, 294].forEach((f, i) => tone(f, i * 0.28, 0.3, 'sawtooth', 0.06, f * 0.94));
-    tone(277, 0.84, 0.9, 'sawtooth', 0.06, 180);
+    // referee whistle: two short + one long blast
+    whistle(0, 0.16);
+    whistle(0.24, 0.16);
+    whistle(0.5, 0.6);
   },
 };
 

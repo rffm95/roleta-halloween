@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Creepster&family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@700;900&family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -9,174 +9,201 @@
 /* All animations only touch transform / opacity so weak TV browsers stay smooth. */
 
 body {
-  background-color: #05020a;
+  background-color: #020617;
   color: white;
   margin: 0;
   overflow: hidden;
   font-family: var(--font-sans);
 }
 
-.halloween-bg {
-  background: radial-gradient(ellipse at 50% 0%, #2a0f45 0%, #13071f 45%, #05020a 100%);
+.font-display { font-family: "Bebas Neue", "Outfit", sans-serif; font-weight: 400; }
+.font-led { font-family: "Orbitron", "Outfit", sans-serif; font-weight: 700; }
+
+/* ---------- Stadium background ---------- */
+.stadium-bg {
+  background: linear-gradient(180deg, #01030b 0%, #0a1733 45%, #0b2a3a 72%, #052e16 100%);
+}
+.stands {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 18%;
+  height: 55%;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 3px, transparent 3px 26px),
+    linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.7) 40%, rgba(15, 23, 42, 0.9) 100%);
+}
+.flashes { position: absolute; inset: 0; pointer-events: none; }
+.flash {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 12px 4px rgba(255, 255, 255, 0.8);
+  opacity: 0;
+  animation: camflash 5s infinite;
+}
+.pitch {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 0;
+  height: 26%;
+  background:
+    linear-gradient(180deg, rgba(2, 6, 23, 0.6) 0%, rgba(2, 6, 23, 0) 40%),
+    repeating-linear-gradient(90deg, #166534 0 120px, #15803d 120px 240px);
+  border-top: 3px solid rgba(255, 255, 255, 0.35);
+  opacity: 0.55;
+}
+.tower {
+  position: absolute;
+  top: 3%;
+  width: 150px;
+  height: 46px;
+  border-radius: 6px;
+  background: radial-gradient(circle, #ffffff 0 5px, transparent 6px) 0 0 / 25px 23px, #1e293b;
+  box-shadow: 0 0 60px 20px rgba(255, 255, 255, 0.25);
+}
+.tower-l { left: 4%; transform: rotate(-12deg); }
+.tower-r { right: 4%; transform: rotate(12deg); }
+.beam {
+  position: absolute;
+  top: -10%;
+  width: 34vw;
+  height: 120vh;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 75%);
+  -webkit-clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
+  will-change: transform;
+}
+.beam-l { left: 0; transform-origin: 50% 0; animation: sweepL 9s ease-in-out infinite; }
+.beam-r { right: 0; transform-origin: 50% 0; animation: sweepR 11s ease-in-out infinite; }
+
+/* ---------- Header ---------- */
+.live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 18px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid rgba(250, 204, 21, 0.6);
+  color: #fde68a;
+  font-weight: 900;
+  font-size: 18px;
+  letter-spacing: 0.35em;
+}
+.live-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+.title-main {
+  letter-spacing: 0.06em;
+  text-shadow: 0 4px 0 #0f172a, 0 10px 30px rgba(0, 0, 0, 0.9), 0 0 40px rgba(250, 204, 21, 0.25);
+}
+.scoreboard {
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1.5px) 0 0 / 6px 6px,
+    linear-gradient(180deg, #111827 0%, #020617 100%);
+  border: 4px solid #facc15;
+  box-shadow: 0 0 50px rgba(250, 204, 21, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
-.title-creepy {
-  font-family: "Creepster", "Outfit", cursive;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-}
-h1.title-creepy {
-  text-shadow: 0 0 18px rgba(249, 115, 22, 0.65), 0 6px 0 #431407, 0 12px 30px rgba(0, 0, 0, 0.9);
-  animation: flicker 7s infinite;
-}
-
-.rules-banner {
-  background: linear-gradient(180deg, #6d28d9 0%, #3b0764 100%);
-  border-color: rgba(249, 115, 22, 0.55);
-  box-shadow: 0 0 70px rgba(168, 85, 247, 0.45);
-}
-
+/* ---------- Prize panels ---------- */
+.panel-head { padding: 6px 18px; transform: skewX(-12deg); }
+.panel-head > * { transform: skewX(12deg); }
+.panel-head-l { background: linear-gradient(90deg, #16a34a, rgba(22, 163, 74, 0)); }
+.panel-head-r { background: linear-gradient(270deg, #dc2626, rgba(220, 38, 38, 0)); }
 .prize-card {
-  background: rgba(20, 8, 32, 0.9);
-  border-color: rgba(168, 85, 247, 0.25);
+  background: linear-gradient(90deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.75));
+  border-left: 8px solid;
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
 }
-.prize-card-hit {
-  border-color: #f97316;
+.prize-card-right {
+  background: linear-gradient(270deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.75));
+  border-left: 0;
+  border-right: 8px solid;
 }
-.monster-badge {
+.sport-badge {
   width: 76px;
   height: 76px;
   flex-shrink: 0;
-  border: 3px solid rgba(255, 255, 255, 0.25);
+  border: 3px solid rgba(255, 255, 255, 0.35);
   box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.25);
 }
 
+/* ---------- Wheel ---------- */
 .hub {
-  width: 100px;
-  height: 100px;
+  width: 104px;
+  height: 104px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 40% 35%, #fdba74 0%, #f97316 45%, #c2410c 100%);
-  border: 8px solid #1c0a00;
-  box-shadow: 0 0 40px rgba(249, 115, 22, 0.8);
+  background: radial-gradient(circle at 40% 35%, #fef9c3 0%, #facc15 45%, #ca8a04 100%);
+  border: 8px solid #0f172a;
+  box-shadow: 0 0 40px rgba(250, 204, 21, 0.7);
 }
-
-/* Rim bulbs */
 .bulb { animation: blink 1.2s steps(1) infinite; }
 .bulb-b { animation-delay: 0.6s; }
 .wheel-spinning .bulb { animation-duration: 0.3s; }
 .wheel-spinning .bulb-b { animation-delay: 0.15s; }
 
-/* Moon */
-.moon {
-  position: absolute;
-  top: 6%;
-  right: 7%;
-  width: 16vmin;
-  height: 16vmin;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #fffbeb 0%, #fde68a 55%, #f59e0b 100%);
-  box-shadow: 0 0 80px 20px rgba(253, 230, 138, 0.25);
-  opacity: 0.85;
+/* ---------- Ticker ---------- */
+.ticker {
+  height: 46px;
+  background: #0f172a;
+  border-top: 3px solid #facc15;
+  overflow: hidden;
 }
-
-/* Fog: two wide gradient strips sliding sideways */
-.fog {
-  position: absolute;
-  left: 0;
-  width: 200%;
-  height: 40%;
-  bottom: -5%;
+.ticker-tag {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0 22px;
+  background: #dc2626;
+  color: #fff;
+  font-size: 30px;
+  letter-spacing: 0.1em;
+  flex-shrink: 0;
+}
+.ticker-window { flex: 1; overflow: hidden; height: 100%; display: flex; align-items: center; }
+.ticker-track {
+  display: flex;
+  white-space: nowrap;
+  font-size: 30px;
+  letter-spacing: 0.08em;
+  color: #fde68a;
   will-change: transform;
-  pointer-events: none;
+  animation: ticker 40s linear infinite;
 }
-.fog-1 {
-  background: radial-gradient(ellipse at 25% 70%, rgba(167, 139, 250, 0.16) 0%, rgba(167, 139, 250, 0) 50%),
-    radial-gradient(ellipse at 75% 70%, rgba(167, 139, 250, 0.16) 0%, rgba(167, 139, 250, 0) 50%);
-  animation: drift 40s linear infinite;
-}
-.fog-2 {
-  bottom: -12%;
-  background: radial-gradient(ellipse at 10% 60%, rgba(132, 204, 22, 0.1) 0%, rgba(132, 204, 22, 0) 45%),
-    radial-gradient(ellipse at 60% 60%, rgba(132, 204, 22, 0.1) 0%, rgba(132, 204, 22, 0) 45%);
-  animation: drift 60s linear infinite reverse;
-}
+.ticker-track span { padding-right: 0; }
 
-.graveyard {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 18%;
-}
-
-/* Bats flying across the screen */
-.bat { position: absolute; left: 0; will-change: transform; pointer-events: none; }
-.bat-1 { top: 18%; animation: fly 16s linear infinite; }
-.bat-2 { top: 34%; animation: fly 22s linear infinite 6s; transform: translateX(-200px); }
-.bat-3 { top: 9%;  animation: fly-back 19s linear infinite 3s; transform: translateX(-200px); }
-
-.spider { animation: dangle 5s ease-in-out infinite; transform-origin: top center; }
-
-.float-icon { animation: bob 1.6s ease-in-out infinite; }
-
-/* Occasional lightning flash */
-.lightning {
-  position: absolute;
-  inset: 0;
-  background: #c4b5fd;
-  opacity: 0;
-  pointer-events: none;
-  animation: lightning 19s infinite;
-  will-change: opacity;
-}
-
+/* ---------- Result screen ---------- */
 .result-win {
-  background: linear-gradient(180deg, #ea580c 0%, #9a3412 100%);
-  border-color: #fde68a;
-  box-shadow: 0 0 120px rgba(249, 115, 22, 0.55);
+  background: linear-gradient(180deg, #15803d 0%, #064e3b 100%);
+  border-color: #facc15;
+  box-shadow: 0 0 120px rgba(250, 204, 21, 0.45);
 }
 .result-lose {
-  background: linear-gradient(180deg, #1e1b2e 0%, #0b0712 100%);
-  border-color: #4d7c0f;
-  box-shadow: 0 0 100px rgba(132, 204, 22, 0.25);
+  background: linear-gradient(180deg, #1e293b 0%, #020617 100%);
+  border-color: #dc2626;
+  box-shadow: 0 0 100px rgba(220, 38, 38, 0.3);
 }
+.shout { letter-spacing: 0.04em; text-shadow: 0 6px 0 rgba(0, 0, 0, 0.4); }
+.float-icon { animation: bob 1.6s ease-in-out infinite; }
 
-@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.2; } }
-@keyframes drift { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-@keyframes fly {
-  0%   { transform: translate(-150px, 0); }
-  25%  { transform: translate(25vw, -30px); }
-  50%  { transform: translate(50vw, 20px); }
-  75%  { transform: translate(75vw, -25px); }
-  100% { transform: translate(110vw, 0); }
-}
-@keyframes fly-back {
-  0%   { transform: translate(110vw, 0) scaleX(-1); }
-  50%  { transform: translate(50vw, 30px) scaleX(-1); }
-  100% { transform: translate(-150px, 0) scaleX(-1); }
-}
-@keyframes dangle {
-  0%, 100% { transform: translateY(-30px) rotate(-3deg); }
-  50% { transform: translateY(10px) rotate(3deg); }
-}
+@keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
+@keyframes camflash { 0%, 90%, 100% { opacity: 0; } 92% { opacity: 1; } 95% { opacity: 0; } }
+@keyframes sweepL { 0%, 100% { transform: rotate(-28deg); } 50% { transform: rotate(-4deg); } }
+@keyframes sweepR { 0%, 100% { transform: rotate(28deg); } 50% { transform: rotate(4deg); } }
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes bob {
   0%, 100% { transform: translateY(0) rotate(-4deg); }
   50% { transform: translateY(-10px) rotate(4deg); }
-}
-@keyframes flicker {
-  0%, 92%, 100% { opacity: 1; }
-  93% { opacity: 0.4; }
-  94% { opacity: 1; }
-  96% { opacity: 0.6; }
-  97% { opacity: 1; }
-}
-@keyframes lightning {
-  0%, 88%, 100% { opacity: 0; }
-  89% { opacity: 0.35; }
-  90% { opacity: 0; }
-  91% { opacity: 0.25; }
-  92% { opacity: 0; }
 }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn {
