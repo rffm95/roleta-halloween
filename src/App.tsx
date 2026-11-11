@@ -108,19 +108,16 @@ export default function App() {
   const renderCard = (prize: Prize, side: 'left' | 'right') => {
     const top = prize.award === 'Régua';
     return (
-      <div key={prize.id} className={`prize-card ${side === 'right' ? 'prize-card-right' : ''} ${prize.sport === 'padel' ? 'is-padel' : 'is-futebol'} ${top ? 'is-top' : ''}`}>
+      <div key={prize.id} className={`prize-card ${side === 'right' ? 'prize-card-right' : ''} ${top ? 'is-top' : ''}`}>
         <img src={asset(prize.icon!)} alt="" className="card-icon" />
-        <div className={`flex flex-col ${side === 'right' ? 'items-end text-right' : ''}`}>
+        <div className="card-text">
           {top && <span className="top-chip">PRÉMIO MÁXIMO</span>}
-          <span className="font-display text-white text-[44px] tracking-wide uppercase leading-[0.9] whitespace-nowrap">{prize.label}</span>
-          <span className={`award ${top ? 'award-top' : ''}`}>{prize.award}</span>
+          <span className="card-label">{prize.label}</span>
+          <span className="card-award gold-text">{prize.award}</span>
         </div>
       </div>
     );
   };
-
-  const tickerText =
-    'PEDE UMA RÉGUA OU UM METRO PARA GIRAR  ●  RÉGUA (5 FINOS) = 1 GIRO  ●  METRO (11 FINOS) = 2 GIROS  ●  PONTO DE OURO: RÉGUA  ●  GOLO, CANTO E SMASH: 3 FINOS  ●  PENÁLTI E BANDEJA: 1 FINO  ●  FUTEBOL E PADEL EM DIRETO NO CHEERS  ●  CHEERS SPORTS & COCKTAIL BAR  ●  ';
 
   return (
     <div className="app-bg overflow-hidden cursor-none select-none" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
@@ -135,108 +132,85 @@ export default function App() {
       <div className="flood flood-r" />
 
       {/* ---------- 1440x900 stage, scaled to fit the TV ---------- */}
-      <div
-        className="flex flex-col items-center justify-between"
-        style={{ position: 'absolute', left: '50%', top: '50%', width: 1440, height: 900, padding: '16px 40px 60px', boxSizing: 'border-box', transform: `translate(-50%, -50%) scale(${stageScale})`, transformOrigin: 'center center' }}
-      >
+      <div style={{ position: 'absolute', left: '50%', top: '50%', width: 1440, height: 900, transform: `translate(-50%, -50%) scale(${stageScale})`, transformOrigin: 'center center' }}>
         {/* Header */}
-        <div className="z-10 text-center flex flex-col items-center">
-          <div className="live-chip mb-1">
-            <span className="live-dot" /> SPORTS &amp; COCKTAIL BAR
-          </div>
-          <h1 className="font-display title-main text-white text-[100px] leading-[0.85] uppercase">
-            Cheers <span className="text-yellow-400">O Bar</span>
+        <div className="header">
+          <div className="live-chip"><span className="live-dot" /> SPORTS &amp; COCKTAIL BAR</div>
+          <h1 className="font-display title-main">
+            <span className="silver-text">CHEERS</span> <span className="gold-text">O BAR</span>
           </h1>
-          <div className="scoreboard mt-2 px-10 py-2 rounded-2xl">
-            <p className="font-display text-[34px] leading-none text-white tracking-wide mb-1">PEDE UMA RÉGUA OU UM METRO PARA GIRAR</p>
-            <div className="font-led text-lg text-yellow-300 tracking-[0.12em]">
-              <span className="mr-10">RÉGUA (5 FINOS) = 1 GIRO</span>
-              <span>METRO (11 FINOS) = 2 GIROS</span>
-            </div>
-          </div>
         </div>
 
-        {/* Game stage */}
-        <div className="flex-1 w-full flex items-center justify-between px-6 relative">
-          <div className="w-[370px] flex flex-col gap-4 text-left z-20">
-            <div className="panel-head panel-head-l">
-              <h3 className="font-display text-[46px] leading-none tracking-wider uppercase text-white">Futebol</h3>
-            </div>
-            {FUTEBOL.map((p) => renderCard(p, 'left'))}
+        {/* Futebol */}
+        <div className="col col-l">
+          <div className="col-head col-head-l">
+            <img src={asset('ball.png')} alt="" className="hero hero-l" />
+            <h3 className="font-display">Futebol</h3>
           </div>
+          {FUTEBOL.map((p) => renderCard(p, 'left'))}
+        </div>
 
-          <div className="relative flex items-center justify-center">
-            <RouletteWheel rotation={rotation} isSpinning={isSpinning} />
-          </div>
+        {/* Wheel */}
+        <div style={{ position: 'absolute', left: 720 - 320, top: 148 }}>
+          <RouletteWheel rotation={rotation} isSpinning={isSpinning} size={640} />
+        </div>
 
-          <div className="w-[370px] flex flex-col gap-4 text-right z-20">
-            <div className="panel-head panel-head-r">
-              <h3 className="font-display text-[46px] leading-none tracking-wider uppercase text-white">Padel</h3>
-            </div>
-            {PADEL.map((p) => renderCard(p, 'right'))}
+        {/* Padel */}
+        <div className="col col-r">
+          <div className="col-head col-head-r">
+            <h3 className="font-display">Padel</h3>
+            <img src={asset('racket.png')} alt="" className="hero hero-r" />
           </div>
+          {PADEL.map((p) => renderCard(p, 'right'))}
+        </div>
+
+        {/* Rules */}
+        <div className="rules">
+          <p className="font-display rules-main">PEDE UMA RÉGUA OU UM METRO PARA GIRAR</p>
+          <p className="rules-sub">
+            <span><b>RÉGUA</b> (5 FINOS) = <b>1 GIRO</b></span>
+            <i />
+            <span><b>METRO</b> (11 FINOS) = <b>2 GIROS</b></span>
+          </p>
         </div>
 
         {/* Sponsors */}
-        <div className="z-10 w-full flex justify-between items-center px-24">
-          <div className="flex flex-col">
-            <span className="text-yellow-400 font-bold text-xs uppercase tracking-[0.2em] mb-1">Cerveja Oficial</span>
-            <div className="flex items-center">
-              <img src={BRAND_LOGOS.sagres} alt="Logótipo Sagres" width={68} height={56} style={{ objectFit: 'contain', marginRight: 14, flexShrink: 0 }} />
-              <span className="text-5xl font-black italic text-white tracking-widest leading-none">SAGRES</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center">
-            <ShieldCheck className="text-yellow-400 mb-1" size={32} />
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">Beba com Responsabilidade</p>
-          </div>
-
-          <div className="flex flex-col text-right">
-            <span className="text-emerald-400 font-bold text-xs uppercase tracking-[0.2em] mb-1">Sponsor Global</span>
-            <div className="flex items-center">
-              <span className="text-5xl font-black italic text-white tracking-widest leading-none">HEINEKEN</span>
-              <img src={BRAND_LOGOS.heineken} alt="Logótipo Heineken" width={100} height={56} style={{ objectFit: 'contain', marginLeft: 14, flexShrink: 0 }} />
-            </div>
+        <div className="sponsor sponsor-l">
+          <img src={BRAND_LOGOS.sagres} alt="Logótipo Sagres" width={62} height={52} style={{ objectFit: 'contain' }} />
+          <div>
+            <span className="sponsor-tag">Cerveja Oficial</span>
+            <span className="sponsor-name">SAGRES</span>
           </div>
         </div>
-
-        {/* Broadcast-style ticker */}
-        <div className="ticker absolute left-0 right-0 bottom-0 flex items-center">
-          <div className="ticker-tag font-display">AO VIVO</div>
-          <div className="ticker-window">
-            <div className="ticker-track font-display">
-              <span>{tickerText}</span>
-              <span>{tickerText}</span>
-            </div>
+        <div className="sponsor sponsor-r">
+          <div style={{ textAlign: 'right' }}>
+            <span className="sponsor-tag">Sponsor Global</span>
+            <span className="sponsor-name">HEINEKEN</span>
           </div>
+          <img src={BRAND_LOGOS.heineken} alt="Logótipo Heineken" width={92} height={52} style={{ objectFit: 'contain' }} />
         </div>
+        <div className="drink"><ShieldCheck size={16} /> Beba com responsabilidade</div>
 
         {/* Result screen */}
         {showOverlay && winner && (
-          <div className="absolute z-50 flex items-center justify-center" style={{ left: -1500, right: -1500, top: -1500, bottom: -1500, background: 'rgba(2,6,23,0.94)', animation: 'fadeIn 0.3s ease-out forwards' }}>
-            <div
-              className={`p-12 rounded-[2.5rem] border-8 flex flex-col items-center text-center max-w-4xl ${winner.isWin ? 'result-win' : 'result-lose'}`}
-              style={{ animation: 'popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards' }}
-            >
+          <div className="overlay">
+            {winner.isWin && <img src={asset('rays.png')} alt="" className="rays" />}
+            <div className={`result ${winner.isWin ? (winner.award === 'Régua' ? 'result-win result-top' : 'result-win') : 'result-lose'}`}>
+              <img src={asset(winner.isWin ? winner.icon! : miss.icon)} alt="" className="result-icon" />
               {winner.isWin ? (
                 <>
-                  <img src={asset(winner.icon!)} alt="" className="float-icon result-icon" />
-                  <h3 className="font-display text-[92px] leading-none text-yellow-300 mb-1 shout">{winner.shout}</h3>
-                  <p className="text-2xl font-bold text-white/80 uppercase tracking-[0.35em] mb-2">Ganhaste</p>
-                  <h2 className="text-[110px] font-black italic text-white leading-none mb-2 uppercase" style={{ textShadow: '0 6px 0 rgba(0,0,0,0.35)' }}>
-                    {winner.award}
-                  </h2>
-                  <span className="font-display text-4xl text-white/80 tracking-widest uppercase">{winner.sport === 'padel' ? 'Padel' : 'Futebol'} · {winner.label}</span>
+                  <h3 className="font-display shout gold-text">{winner.shout}</h3>
+                  <p className="result-small">Ganhaste</p>
+                  <h2 className="result-award">{winner.award}</h2>
+                  <p className="result-tag font-display">{winner.sport === 'padel' ? 'Padel' : 'Futebol'} · {winner.label}</p>
                 </>
               ) : (
                 <>
-                  <img src={asset(miss.icon)} alt="" className="float-icon result-icon" />
-                  <h2 className="font-display text-[120px] text-red-500 leading-none mb-4 shout">{miss.shout}</h2>
-                  <p className="text-4xl font-bold text-white/60 uppercase tracking-widest">Tenta outra vez!</p>
+                  <h2 className="font-display shout shout-lose">{miss.shout}</h2>
+                  <p className="result-award result-award-lose">Tenta outra vez!</p>
                 </>
               )}
-              <div className="mt-9 text-white/60 font-bold text-2xl uppercase tracking-[0.4em] animate-pulse font-mono">CLIQUE PARA CONTINUAR</div>
+              <div className="result-continue">CLIQUE PARA CONTINUAR</div>
             </div>
           </div>
         )}
