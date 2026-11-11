@@ -2,23 +2,20 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti';
 import { ShieldCheck } from 'lucide-react';
 import RouletteWheel, { SPIN_MS } from './components/RouletteWheel';
-import { SportIcon, Trophy, Whistle } from './components/Sports';
-import { PRIZES, Prize, MISS_SHOUTS } from './types';
+import { PRIZES, Prize, MISSES, asset } from './types';
 import { BRAND_LOGOS } from './brandLogos';
 import { sfx, startTicks } from './sound';
 
-// One card per sport (football has two slices on the wheel).
 const byId = (id: number) => PRIZES[id];
-const FEATURED = [byId(0), byId(2)]; // Futebol, Padel
-const OTHERS = [byId(4), byId(8), byId(10)]; // Ténis, Basket, F1
-const slicesOf = (p: Prize) => PRIZES.filter((x) => x.sport === p.sport).length;
+const FUTEBOL = [byId(0), byId(8), byId(4)]; // Golo, Canto, Penálti
+const PADEL = [byId(6), byId(2), byId(10)]; // Ponto de Ouro (Régua), Smash, Bandeja
 
 export default function App() {
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [winner, setWinner] = useState<Prize | null>(null);
   const [showOverlay, setShowOverlay] = useState(false);
-  const [missShout, setMissShout] = useState(MISS_SHOUTS[0]);
+  const [miss, setMiss] = useState(MISSES[0]);
   const stopTicks = useRef<() => void>(() => {});
 
   // Fit the fixed 1440x900 stage into the TV browser's real viewport (same as the original).
@@ -69,11 +66,11 @@ export default function App() {
 
       if (actualWinner.isWin) {
         sfx.win();
-        const colors = ['#facc15', '#ffffff', '#22c55e', '#ef4444'];
+        const colors = ['#facc15', '#ffffff', '#22c55e', '#2563eb', '#d9f99d'];
         confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0.1, y: 0.7 }, colors, zIndex: 100 });
         confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 0.9, y: 0.7 }, colors, zIndex: 100 });
       } else {
-        setMissShout(MISS_SHOUTS[Math.floor(Math.random() * MISS_SHOUTS.length)]);
+        setMiss(MISSES[Math.floor(Math.random() * MISSES.length)]);
         sfx.lose();
       }
     }, SPIN_MS + 100);
@@ -108,69 +105,50 @@ export default function App() {
     };
   }, [spin, isSpinning, showOverlay]);
 
-  const renderCard = (prize: Prize, side: 'left' | 'right') => (
-    <div key={prize.id} className={`prize-card rounded-2xl p-4 flex items-center gap-5 ${side === 'right' ? 'flex-row-reverse prize-card-right' : ''}`} style={{ borderColor: prize.color }}>
-      <div className="sport-badge rounded-full flex items-center justify-center" style={{ background: prize.color }}>
-        <SportIcon id={prize.sport!} size={58} />
+  const renderCard = (prize: Prize, side: 'left' | 'right') => {
+    const top = prize.award === 'Régua';
+    return (
+      <div key={prize.id} className={`prize-card ${side === 'right' ? 'prize-card-right' : ''} ${prize.sport === 'padel' ? 'is-padel' : 'is-futebol'} ${top ? 'is-top' : ''}`}>
+        <img src={asset(prize.icon!)} alt="" className="card-icon" />
+        <div className={`flex flex-col ${side === 'right' ? 'items-end text-right' : ''}`}>
+          {top && <span className="top-chip">PRÉMIO MÁXIMO</span>}
+          <span className="font-display text-white text-[44px] tracking-wide uppercase leading-[0.9] whitespace-nowrap">{prize.label}</span>
+          <span className={`award ${top ? 'award-top' : ''}`}>{prize.award}</span>
+        </div>
       </div>
-      <div className={`flex flex-col ${side === 'right' ? 'text-right' : ''}`}>
-        <span className="font-display text-white text-[40px] tracking-wide uppercase leading-none">{prize.name}</span>
-        <span className={`font-extrabold text-2xl leading-none uppercase ${prize.award === 'Régua' ? 'text-yellow-300' : 'text-emerald-300'}`}>
-          {prize.award}
-        </span>
-      </div>
-    </div>
-  );
-
-  const renderFeatured = (prize: Prize) => (
-    <div key={prize.id} className="prize-card featured-card rounded-3xl p-5 flex items-center gap-6" style={{ borderColor: prize.color }}>
-      <div className="sport-badge featured-badge rounded-full flex items-center justify-center" style={{ background: prize.color }}>
-        <SportIcon id={prize.sport!} size={82} />
-      </div>
-      <div className="flex flex-col">
-        <span className="font-display text-white text-[64px] tracking-wide uppercase leading-[0.9]">{prize.name}</span>
-        <span className={`font-extrabold text-[34px] leading-none uppercase ${prize.award === 'Régua' ? 'text-yellow-300' : 'text-emerald-300'}`}>
-          {prize.award}
-          {slicesOf(prize) > 1 && <span className="x2-chip ml-3">{slicesOf(prize)}× NA RODA</span>}
-          {prize.award === 'Régua' && <span className="x2-chip ml-3">PRÉMIO MÁXIMO</span>}
-        </span>
-      </div>
-    </div>
-  );
+    );
+  };
 
   const tickerText =
-    'PEDE UMA RÉGUA OU UM METRO PARA GIRAR  ●  RÉGUA (5 FINOS) = 1 GIRO  ●  METRO (11 FINOS) = 2 GIROS  ●  PADEL: RÉGUA  ●  FUTEBOL E TÉNIS: 3 FINOS  ●  BASQUETEBOL E FÓRMULA 1: 1 FINO  ●  FUTEBOL E PADEL EM DIRETO NO CHEERS  ●  CHEERS SPORTS & COCKTAIL BAR  ●  ';
+    'PEDE UMA RÉGUA OU UM METRO PARA GIRAR  ●  RÉGUA (5 FINOS) = 1 GIRO  ●  METRO (11 FINOS) = 2 GIROS  ●  PONTO DE OURO: RÉGUA  ●  GOLO, CANTO E SMASH: 3 FINOS  ●  PENÁLTI E BANDEJA: 1 FINO  ●  FUTEBOL E PADEL EM DIRETO NO CHEERS  ●  CHEERS SPORTS & COCKTAIL BAR  ●  ';
 
   return (
-    <div className="stadium-bg overflow-hidden cursor-none select-none" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
-      {/* ---------- Stadium atmosphere (behind the stage) ---------- */}
-      <div className="stands" />
+    <div className="app-bg overflow-hidden cursor-none select-none" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
+      {/* ---------- Pre-rendered football | padel scene (one static image) ---------- */}
+      <div className="scene" style={{ backgroundImage: `url(${asset('scene.jpg')})` }} />
       <div className="flashes">
-        {Array.from({ length: 14 }, (_, i) => (
-          <span key={i} className="flash" style={{ left: `${(i * 37) % 100}%`, top: `${20 + ((i * 53) % 60)}%`, animationDelay: `${(i * 0.73) % 5}s` }} />
+        {Array.from({ length: 10 }, (_, i) => (
+          <span key={i} className="flash" style={{ left: `${(i * 37 + 5) % 100}%`, top: `${26 + ((i * 53) % 22)}%`, animationDelay: `${(i * 0.73) % 5}s` }} />
         ))}
       </div>
-      <div className="beam beam-l" />
-      <div className="beam beam-r" />
-      <div className="tower tower-l" />
-      <div className="tower tower-r" />
-      <div className="pitch" />
+      <div className="flood flood-l" />
+      <div className="flood flood-r" />
 
       {/* ---------- 1440x900 stage, scaled to fit the TV ---------- */}
       <div
         className="flex flex-col items-center justify-between"
-        style={{ position: 'absolute', left: '50%', top: '50%', width: 1440, height: 900, padding: '22px 40px 64px', boxSizing: 'border-box', transform: `translate(-50%, -50%) scale(${stageScale})`, transformOrigin: 'center center' }}
+        style={{ position: 'absolute', left: '50%', top: '50%', width: 1440, height: 900, padding: '16px 40px 60px', boxSizing: 'border-box', transform: `translate(-50%, -50%) scale(${stageScale})`, transformOrigin: 'center center' }}
       >
         {/* Header */}
         <div className="z-10 text-center flex flex-col items-center">
-          <div className="live-chip mb-2">
+          <div className="live-chip mb-1">
             <span className="live-dot" /> SPORTS &amp; COCKTAIL BAR
           </div>
-          <h1 className="font-display title-main text-white text-[124px] leading-[0.85] uppercase">
+          <h1 className="font-display title-main text-white text-[100px] leading-[0.85] uppercase">
             Cheers <span className="text-yellow-400">O Bar</span>
           </h1>
-          <div className="scoreboard mt-3 px-10 py-3 rounded-2xl">
-            <p className="font-display text-[40px] leading-none text-white tracking-wide mb-1">PEDE UMA RÉGUA OU UM METRO PARA GIRAR</p>
+          <div className="scoreboard mt-2 px-10 py-2 rounded-2xl">
+            <p className="font-display text-[34px] leading-none text-white tracking-wide mb-1">PEDE UMA RÉGUA OU UM METRO PARA GIRAR</p>
             <div className="font-led text-lg text-yellow-300 tracking-[0.12em]">
               <span className="mr-10">RÉGUA (5 FINOS) = 1 GIRO</span>
               <span>METRO (11 FINOS) = 2 GIROS</span>
@@ -180,25 +158,22 @@ export default function App() {
 
         {/* Game stage */}
         <div className="flex-1 w-full flex items-center justify-between px-6 relative">
-          <div className="w-[380px] flex flex-col gap-5 text-left z-20">
+          <div className="w-[370px] flex flex-col gap-4 text-left z-20">
             <div className="panel-head panel-head-l">
-              <h3 className="font-display text-4xl tracking-wider uppercase text-white whitespace-nowrap">Favoritos do Cheers</h3>
+              <h3 className="font-display text-[46px] leading-none tracking-wider uppercase text-white">Futebol</h3>
             </div>
-            {FEATURED.map(renderFeatured)}
+            {FUTEBOL.map((p) => renderCard(p, 'left'))}
           </div>
 
           <div className="relative flex items-center justify-center">
-            <RouletteWheel prizes={PRIZES} rotation={rotation} isSpinning={isSpinning} />
-            <div className="hub absolute top-1/2 left-1/2 z-40 rounded-full flex items-center justify-center">
-              <span className="font-display text-[34px] text-slate-900 leading-none tracking-wide">{isSpinning ? '...' : 'GIRAR'}</span>
-            </div>
+            <RouletteWheel rotation={rotation} isSpinning={isSpinning} />
           </div>
 
-          <div className="w-[360px] flex flex-col gap-4 text-right z-20">
+          <div className="w-[370px] flex flex-col gap-4 text-right z-20">
             <div className="panel-head panel-head-r">
-              <h3 className="font-display text-4xl tracking-widest uppercase text-white">Mais prémios</h3>
+              <h3 className="font-display text-[46px] leading-none tracking-wider uppercase text-white">Padel</h3>
             </div>
-            {OTHERS.map((prize) => renderCard(prize, 'right'))}
+            {PADEL.map((p) => renderCard(p, 'right'))}
           </div>
         </div>
 
@@ -246,21 +221,18 @@ export default function App() {
             >
               {winner.isWin ? (
                 <>
-                  <div className="float-icon mb-1"><Trophy size={96} /></div>
-                  <h3 className="font-display text-[96px] leading-none text-yellow-300 mb-1 shout">{winner.shout}</h3>
+                  <img src={asset(winner.icon!)} alt="" className="float-icon result-icon" />
+                  <h3 className="font-display text-[92px] leading-none text-yellow-300 mb-1 shout">{winner.shout}</h3>
                   <p className="text-2xl font-bold text-white/80 uppercase tracking-[0.35em] mb-2">Ganhaste</p>
-                  <h2 className="text-[110px] font-black italic text-white leading-none mb-7 uppercase" style={{ textShadow: '0 6px 0 rgba(0,0,0,0.35)' }}>
+                  <h2 className="text-[110px] font-black italic text-white leading-none mb-2 uppercase" style={{ textShadow: '0 6px 0 rgba(0,0,0,0.35)' }}>
                     {winner.award}
                   </h2>
-                  <div className="flex items-center bg-black/30 px-8 py-3 rounded-2xl border-2 border-white/30">
-                    <SportIcon id={winner.sport!} size={70} className="mr-5" />
-                    <span className="font-display text-5xl text-white tracking-widest uppercase">{winner.name}</span>
-                  </div>
+                  <span className="font-display text-4xl text-white/80 tracking-widest uppercase">{winner.sport === 'padel' ? 'Padel' : 'Futebol'} · {winner.label}</span>
                 </>
               ) : (
                 <>
-                  <div className="float-icon mb-2"><Whistle size={130} /></div>
-                  <h2 className="font-display text-[130px] text-red-500 leading-none mb-4 shout">{missShout}</h2>
+                  <img src={asset(miss.icon)} alt="" className="float-icon result-icon" />
+                  <h2 className="font-display text-[120px] text-red-500 leading-none mb-4 shout">{miss.shout}</h2>
                   <p className="text-4xl font-bold text-white/60 uppercase tracking-widest">Tenta outra vez!</p>
                 </>
               )}

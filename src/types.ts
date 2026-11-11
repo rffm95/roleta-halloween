@@ -1,32 +1,40 @@
-export type SportId = 'futebol' | 'padel' | 'tenis' | 'basquete' | 'f1';
+export type SportId = 'futebol' | 'padel';
 
 export interface Prize {
   id: number;
-  label: string;        // short name on the wheel
-  name?: string;        // full name on panels / result screen
+  label: string;        // name on panels / result screen
   award?: string;
   isWin: boolean;
-  color: string;
   sport?: SportId;
+  icon?: string;        // pre-rendered image in public/assets
   shout?: string;       // headline on the result screen
 }
 
 // Same prizes and odds as the original Cheers roulette:
 // 3 x "3 finos", 2 x "1 fino", 1 x "Régua" and 6 x "Tenta outra vez" (12 equal slices).
-// Football and padel are the stars of the Cheers: football has two slices and padel holds the Régua.
+// Order must match the pre-rendered wheel (scripts/render-assets.cjs): slice i sits at i*30..(i+1)*30 deg.
 export const PRIZES: Prize[] = [
-  { id: 0, label: 'Futebol', name: 'Futebol', award: '3 finos', isWin: true, color: '#15803d', sport: 'futebol', shout: 'GOOOLO!' },
-  { id: 1, label: 'Tenta outra vez', isWin: false, color: '#0b1222' },
-  { id: 2, label: 'Padel', name: 'Padel', award: 'Régua', isWin: true, color: '#1d4ed8', sport: 'padel', shout: 'PONTO DE OURO!' },
-  { id: 3, label: 'Tenta outra vez', isWin: false, color: '#0b1222' },
-  { id: 4, label: 'Ténis', name: 'Ténis', award: '3 finos', isWin: true, color: '#c2410c', sport: 'tenis', shout: 'ACE!' },
-  { id: 5, label: 'Tenta outra vez', isWin: false, color: '#0b1222' },
-  { id: 6, label: 'Futebol', name: 'Futebol', award: '3 finos', isWin: true, color: '#15803d', sport: 'futebol', shout: 'GOOOLO!' },
-  { id: 7, label: 'Tenta outra vez', isWin: false, color: '#0b1222' },
-  { id: 8, label: 'Basket', name: 'Basquetebol', award: '1 fino', isWin: true, color: '#6d28d9', sport: 'basquete', shout: 'CESTO!' },
-  { id: 9, label: 'Tenta outra vez', isWin: false, color: '#0b1222' },
-  { id: 10, label: 'Fórmula 1', name: 'Fórmula 1', award: '1 fino', isWin: true, color: '#b91c1c', sport: 'f1', shout: 'BANDEIRA XADREZ!' },
-  { id: 11, label: 'Tenta outra vez', isWin: false, color: '#0b1222' },
+  { id: 0, label: 'Golo', award: '3 finos', isWin: true, sport: 'futebol', icon: 'icon-ball.png', shout: 'GOOOLO!' },
+  { id: 1, label: 'Tenta outra vez', isWin: false },
+  { id: 2, label: 'Smash', award: '3 finos', isWin: true, sport: 'padel', icon: 'icon-racket.png', shout: 'SMASH POR 3!' },
+  { id: 3, label: 'Tenta outra vez', isWin: false },
+  { id: 4, label: 'Penálti', award: '1 fino', isWin: true, sport: 'futebol', icon: 'icon-goal.png', shout: 'PENÁLTI MARCADO!' },
+  { id: 5, label: 'Tenta outra vez', isWin: false },
+  { id: 6, label: 'Ponto de Ouro', award: 'Régua', isWin: true, sport: 'padel', icon: 'icon-crossed.png', shout: 'PONTO DE OURO!' },
+  { id: 7, label: 'Tenta outra vez', isWin: false },
+  { id: 8, label: 'Canto', award: '3 finos', isWin: true, sport: 'futebol', icon: 'icon-corner.png', shout: 'GOLO OLÍMPICO!' },
+  { id: 9, label: 'Tenta outra vez', isWin: false },
+  { id: 10, label: 'Bandeja', award: '1 fino', isWin: true, sport: 'padel', icon: 'icon-racketball.png', shout: 'BANDEJA PERFEITA!' },
+  { id: 11, label: 'Tenta outra vez', isWin: false },
 ];
 
-export const MISS_SHOUTS = ['FORA DE JOGO!', 'NA TRAVE!', 'FALTA!', 'BOLA FORA!', 'QUASE!'];
+export const MISSES: { shout: string; icon: string }[] = [
+  { shout: 'NA TRAVE!', icon: 'icon-goal.png' },
+  { shout: 'FORA DE JOGO!', icon: 'icon-ball.png' },
+  { shout: 'AO LADO!', icon: 'icon-goal.png' },
+  { shout: 'NA REDE!', icon: 'icon-net.png' },
+  { shout: 'BOLA FORA!', icon: 'icon-padelball.png' },
+  { shout: 'DUPLA FALTA!', icon: 'icon-net.png' },
+];
+
+export const asset = (file: string) => `${import.meta.env.BASE_URL}assets/${file}`;

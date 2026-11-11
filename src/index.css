@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Orbitron:wght@700;900&family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@700&family=Orbitron:wght@700;900&family=Outfit:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -19,19 +19,14 @@ body {
 .font-display { font-family: "Bebas Neue", "Outfit", sans-serif; font-weight: 400; }
 .font-led { font-family: "Orbitron", "Outfit", sans-serif; font-weight: 700; }
 
-/* ---------- Stadium background ---------- */
-.stadium-bg {
-  background: linear-gradient(180deg, #01030b 0%, #0a1733 45%, #0b2a3a 72%, #052e16 100%);
-}
-.stands {
+/* ---------- Background: one pre-rendered image + 2 cheap light layers ---------- */
+.app-bg { background: #01030a; }
+.scene {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 18%;
-  height: 55%;
-  background:
-    repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.035) 0 3px, transparent 3px 26px),
-    linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.7) 40%, rgba(15, 23, 42, 0.9) 100%);
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 .flashes { position: absolute; inset: 0; pointer-events: none; }
 .flash {
@@ -44,42 +39,19 @@ body {
   opacity: 0;
   animation: camflash 5s infinite;
 }
-.pitch {
+.flood {
   position: absolute;
-  left: -10%;
-  right: -10%;
-  bottom: 0;
-  height: 26%;
-  background:
-    linear-gradient(180deg, rgba(2, 6, 23, 0.6) 0%, rgba(2, 6, 23, 0) 40%),
-    repeating-linear-gradient(90deg, #166534 0 120px, #15803d 120px 240px);
-  border-top: 3px solid rgba(255, 255, 255, 0.35);
-  opacity: 0.55;
-}
-.tower {
-  position: absolute;
-  top: 3%;
-  width: 150px;
-  height: 46px;
-  border-radius: 6px;
-  background: radial-gradient(circle, #ffffff 0 5px, transparent 6px) 0 0 / 25px 23px, #1e293b;
-  box-shadow: 0 0 60px 20px rgba(255, 255, 255, 0.25);
-}
-.tower-l { left: 4%; transform: rotate(-12deg); }
-.tower-r { right: 4%; transform: rotate(12deg); }
-.beam {
-  position: absolute;
-  top: -10%;
-  width: 34vw;
-  height: 120vh;
+  top: -12%;
+  width: 40vw;
+  height: 40vw;
+  border-radius: 50%;
   pointer-events: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0) 75%);
-  -webkit-clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
-  clip-path: polygon(45% 0, 55% 0, 100% 100%, 0 100%);
-  will-change: transform;
+  background: radial-gradient(circle, rgba(255, 251, 230, 0.22) 0%, rgba(255, 251, 230, 0) 65%);
+  will-change: opacity;
+  animation: flood 6s ease-in-out infinite;
 }
-.beam-l { left: 0; transform-origin: 50% 0; animation: sweepL 9s ease-in-out infinite; }
-.beam-r { right: 0; transform-origin: 50% 0; animation: sweepR 11s ease-in-out infinite; }
+.flood-l { left: -6vw; }
+.flood-r { right: -6vw; animation-delay: 3s; }
 
 /* ---------- Header ---------- */
 .live-chip {
@@ -115,50 +87,56 @@ body {
 }
 
 /* ---------- Prize panels ---------- */
-.panel-head { padding: 6px 18px; transform: skewX(-12deg); }
+.panel-head { padding: 8px 22px 4px; transform: skewX(-12deg); }
 .panel-head > * { transform: skewX(12deg); }
-.panel-head-l { background: linear-gradient(90deg, #16a34a, rgba(22, 163, 74, 0)); }
-.panel-head-r { background: linear-gradient(270deg, #dc2626, rgba(220, 38, 38, 0)); }
+.panel-head-l { background: linear-gradient(90deg, #15803d 0%, rgba(21, 128, 61, 0.6) 55%, rgba(21, 128, 61, 0) 100%); border-left: 6px solid #fff; }
+.panel-head-r { background: linear-gradient(270deg, #1d4ed8 0%, rgba(29, 78, 216, 0.6) 55%, rgba(29, 78, 216, 0) 100%); border-right: 6px solid #d9f99d; }
 .prize-card {
-  background: linear-gradient(90deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.75));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 18px 10px 10px;
+  border-radius: 18px;
+  background: linear-gradient(90deg, rgba(3, 7, 18, 0.92), rgba(3, 7, 18, 0.6));
   border-left: 8px solid;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
+.prize-card.is-futebol { border-color: #22c55e; }
+.prize-card.is-padel { border-color: #3b82f6; }
 .prize-card-right {
-  background: linear-gradient(270deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.75));
+  flex-direction: row-reverse;
+  padding: 10px 10px 10px 18px;
+  background: linear-gradient(270deg, rgba(3, 7, 18, 0.92), rgba(3, 7, 18, 0.6));
   border-left: 0;
   border-right: 8px solid;
 }
-.sport-badge {
-  width: 76px;
-  height: 76px;
-  flex-shrink: 0;
-  border: 3px solid rgba(255, 255, 255, 0.35);
-  box-shadow: inset 0 -8px 0 rgba(0, 0, 0, 0.25);
+.prize-card.is-top {
+  border-color: #facc15;
+  background: linear-gradient(270deg, rgba(113, 63, 18, 0.95), rgba(3, 7, 18, 0.7));
+  box-shadow: 0 0 36px rgba(250, 204, 21, 0.35), 0 14px 28px rgba(0, 0, 0, 0.55);
 }
-
-.featured-card { border-left-width: 10px; box-shadow: 0 0 40px rgba(250, 204, 21, 0.18), 0 15px 30px rgba(0, 0, 0, 0.5); }
-.featured-badge { width: 104px; height: 104px; }
-.x2-chip {
+.card-icon { width: 92px; height: 92px; object-fit: contain; flex-shrink: 0; }
+.award { font-family: "Oswald", "Outfit", sans-serif; font-weight: 700; font-size: 30px; line-height: 1.05; text-transform: uppercase; color: #6ee7b7; letter-spacing: 0.04em; }
+.award-top { color: #fde047; font-size: 36px; }
+.top-chip {
   display: inline-block;
-  vertical-align: middle;
-  font-size: 15px;
-  letter-spacing: 0.12em;
-  padding: 4px 10px;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  padding: 3px 10px;
+  margin-bottom: 4px;
   border-radius: 999px;
   background: #facc15;
   color: #0f172a;
   font-weight: 900;
 }
+.result-icon { width: 190px; height: 170px; object-fit: contain; margin-bottom: 6px; }
 
 /* ---------- Wheel ---------- */
-.hub {
-  width: 104px;
-  height: 104px;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle at 40% 35%, #fef9c3 0%, #facc15 45%, #ca8a04 100%);
-  border: 8px solid #0f172a;
-  box-shadow: 0 0 40px rgba(250, 204, 21, 0.7);
+.wheel-glow {
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(250, 204, 21, 0.3) 0%, rgba(250, 204, 21, 0.12) 45%, rgba(250, 204, 21, 0) 70%);
 }
 .bulb { animation: blink 1.2s steps(1) infinite; }
 .bulb-b { animation-delay: 0.6s; }
@@ -197,7 +175,7 @@ body {
 
 /* ---------- Result screen ---------- */
 .result-win {
-  background: linear-gradient(180deg, #15803d 0%, #064e3b 100%);
+  background: linear-gradient(135deg, #166534 0%, #064e3b 48%, #1e3a8a 52%, #1d4ed8 100%);
   border-color: #facc15;
   box-shadow: 0 0 120px rgba(250, 204, 21, 0.45);
 }
@@ -212,8 +190,7 @@ body {
 @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.25; } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.25; } }
 @keyframes camflash { 0%, 90%, 100% { opacity: 0; } 92% { opacity: 1; } 95% { opacity: 0; } }
-@keyframes sweepL { 0%, 100% { transform: rotate(-28deg); } 50% { transform: rotate(-4deg); } }
-@keyframes sweepR { 0%, 100% { transform: rotate(28deg); } 50% { transform: rotate(4deg); } }
+@keyframes flood { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @keyframes bob {
   0%, 100% { transform: translateY(0) rotate(-4deg); }

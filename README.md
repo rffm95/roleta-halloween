@@ -1,20 +1,10 @@
-# 🏆 Roleta Cheers — Sports & Cocktail Bar
+# Roleta Cheers — Futebol & Padel
 
-Roleta de prémios do Cheers O Bar para a TV do bar, com tema de desporto (estádio, holofotes, placard e rodapé "AO VIVO").
+Roleta de prémios para a TV do Cheers O Bar (Sports & Cocktail Bar).
 
-- Mesmos prémios e probabilidades da roleta original (12 fatias iguais, 50% de prémio):
-  Padel = Régua · Futebol (2 fatias) e Ténis = 3 finos · Basquetebol e Fórmula 1 = 1 fino · 6 × "Tenta outra vez".
-- Qualquer tecla do comando ou clique faz girar; outra tecla fecha o resultado.
-- Ecrã fixo 1440×900 que se ajusta a qualquer TV; build compatível com browsers antigos de Smart TV.
-- Sons sintetizados (tic-tic da roda, festejo com público, apito do árbitro). Para desligar: `?som=0` no link.
+- Mesmos prémios e probabilidades da roleta original: 12 fatias iguais, 3× "3 finos", 2× "1 fino", 1× "Régua", 6× "Tenta outra vez" (50% de prémio).
+- Qualquer tecla do comando ou clique faz girar. `?som=0` desliga o som.
+- Visual realista pré-renderizado em imagens (`public/assets/`) para correr leve em Smart TVs: a TV só mostra imagens e roda uma delas com uma transformação CSS.
+- Para regenerar as imagens: `node scripts/render-assets.cjs` (precisa de Playwright/Chromium).
 
-A versão de Halloween está guardada no branch `halloween-2026`.
-
-## Correr localmente
-
-```
-npm install --legacy-peer-deps
-npm run dev
-```
-
-O deploy para o GitHub Pages é automático a cada push para `main`.
+Versões anteriores: branch `desporto-2026` (desporto variado) e `halloween-2026`.
