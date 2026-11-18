@@ -22,7 +22,7 @@ const RouletteWheel: React.FC<RouletteWheelProps> = ({ rotation, isSpinning, siz
       <div key={grp} className={`bulbs ${grp ? 'bulbs-b' : 'bulbs-a'}`}>
         {Array.from({ length: 12 }, (_, k) => {
           const a = ((k * 2 + grp) / 24) * Math.PI * 2;
-          return <span key={k} className="bulb" style={{ left: size / 2 + Math.sin(a) * r, top: size / 2 - Math.cos(a) * r }} />;
+          return <span key={k} className={`bulb bulb-${(k + grp * 2) % 4}`} style={{ left: size / 2 + Math.sin(a) * r, top: size / 2 - Math.cos(a) * r }} />;
         })}
       </div>
     ));

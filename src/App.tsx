@@ -7,6 +7,33 @@ import { BRAND_LOGOS } from './brandLogos';
 import { sfx, startTicks } from './sound';
 
 const byId = (id: number) => PRIZES[id];
+
+// Falling snow: plain divs animated with transform only (cheap on the TV).
+type Flake = { x: number; s: number; d: number; t: number; o: number };
+const makeFlakes = (n: number, seed: number, big: number): Flake[] =>
+  Array.from({ length: n }, (_, i) => {
+    const r = (k: number) => ((Math.sin((i + 1) * (seed + k) * 12.9898) * 43758.5453) % 1 + 1) % 1;
+    return { x: r(1) * 100, s: 3 + r(2) * big, d: -r(3) * 14, t: 9 + r(4) * 9, o: 0.45 + r(5) * 0.5 };
+  });
+const SNOW_BACK = makeFlakes(34, 3, 7);
+const SNOW_FRONT = makeFlakes(12, 7, 4);
+const Snow = ({ flakes, front = false }: { flakes: Flake[]; front?: boolean }) => (
+  <div className={`snow ${front ? 'snow-front' : ''}`}>
+    {flakes.map((f, i) => (
+      <span key={i} className={`flake sway-${i % 3}`} style={{ left: `${f.x}%`, animationDelay: `${f.d}s`, animationDuration: `${f.t}s` }}>
+        <i style={{ width: f.s, height: f.s, opacity: f.o }} />
+      </span>
+    ))}
+  </div>
+);
+
+// Garland of bulbs hanging across the top of the stage (two sagging loops).
+const GARLAND = Array.from({ length: 30 }, (_, i) => {
+  const t = i / 29, x = 20 + t * 1400, loop = (t * 2) % 1;
+  return { x, y: 8 + Math.sin(loop * Math.PI) * 46, c: i % 4 };
+});
+const GARLAND_PATH = `M 20 6 Q 370 ${8 + 92} 720 6 Q 1070 ${8 + 92} 1420 6`;
+const TWINKLES = Array.from({ length: 16 }, (_, i) => ({ x: (i * 37 + 7) % 100, y: 3 + ((i * 53) % 30), d: (i * 0.61) % 4 }));
 const FUTEBOL = [byId(0), byId(8), byId(4)]; // Golo, Canto, Penálti
 const PADEL = [byId(6), byId(2), byId(10)]; // Ponto de Ouro (Régua), Smash, Bandeja
 
@@ -66,7 +93,7 @@ export default function App() {
 
       if (actualWinner.isWin) {
         sfx.win();
-        const colors = ['#facc15', '#ffffff', '#22c55e', '#2563eb', '#d9f99d'];
+        const colors = ['#facc15', '#ffffff', '#dc2626', '#16a34a', '#fde68a'];
         confetti({ particleCount: 40, angle: 60, spread: 55, origin: { x: 0.1, y: 0.7 }, colors, zIndex: 100 });
         confetti({ particleCount: 40, angle: 120, spread: 55, origin: { x: 0.9, y: 0.7 }, colors, zIndex: 100 });
       } else {
@@ -109,6 +136,7 @@ export default function App() {
     const top = prize.award === 'Régua';
     return (
       <div key={prize.id} className={`prize-card ${side === 'right' ? 'prize-card-right' : ''} ${top ? 'is-top' : ''}`}>
+        {top && <img src={asset('holly.png')} alt="" className="card-holly" />}
         <img src={asset(prize.icon!)} alt="" className="card-icon" />
         <div className="card-text">
           {top && <span className="top-chip">PRÉMIO MÁXIMO</span>}
@@ -123,31 +151,46 @@ export default function App() {
     <div className="app-bg overflow-hidden cursor-none select-none" style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
       {/* ---------- Pre-rendered football | padel scene (one static image) ---------- */}
       <div className="scene" style={{ backgroundImage: `url(${asset('scene.jpg')})` }} />
-      <div className="flashes">
-        {Array.from({ length: 10 }, (_, i) => (
-          <span key={i} className="flash" style={{ left: `${(i * 37 + 5) % 100}%`, top: `${26 + ((i * 53) % 22)}%`, animationDelay: `${(i * 0.73) % 5}s` }} />
+      <div className="twinkles">
+        {TWINKLES.map((t, i) => (
+          <span key={i} className={`twinkle tw-${i % 4}`} style={{ left: `${t.x}%`, top: `${t.y}%`, animationDelay: `${t.d}s` }} />
         ))}
       </div>
-      <div className="flood flood-l" />
-      <div className="flood flood-r" />
+      <Snow flakes={SNOW_BACK} />
 
       {/* ---------- 1440x900 stage, scaled to fit the TV ---------- */}
       <div style={{ position: 'absolute', left: '50%', top: '50%', width: 1440, height: 900, transform: `translate(-50%, -50%) scale(${stageScale})`, transformOrigin: 'center center' }}>
+        {/* Christmas light garland */}
+        <div className="garland">
+          <svg width="1440" height="70" viewBox="0 0 1440 70" className="garland-wire"><path d={GARLAND_PATH} fill="none" stroke="#0d2414" strokeWidth="3" /></svg>
+          {[0, 1].map((grp) => (
+            <div key={grp} className={`garland-grp ${grp ? 'garland-b' : 'garland-a'}`}>
+              {GARLAND.filter((_, i) => i % 2 === grp).map((b, i) => (
+                <span key={i} className={`gbulb gb-${b.c}`} style={{ left: b.x, top: b.y }} />
+              ))}
+            </div>
+          ))}
+        </div>
+
         {/* Header */}
         <div className="header">
-          <div className="live-chip"><span className="live-dot" /> SPORTS &amp; COCKTAIL BAR</div>
+          <div className="live-chip"><span className="xmas-star">★</span> FELIZ NATAL · SPORTS &amp; COCKTAIL BAR <span className="xmas-star">★</span></div>
           <h1 className="font-display title-main">
-            <span className="silver-text">CHEERS</span> <span className="gold-text">O BAR</span>
+            <span className="silver-text title-c">CHEERS<img src={asset('hat.png')} alt="" className="title-hat" /></span> <span className="gold-text">O BAR</span>
           </h1>
         </div>
 
         {/* Futebol */}
         <div className="col col-l">
           <div className="col-head col-head-l">
-            <img src={asset('ball.png')} alt="" className="hero hero-l" />
+            <img src={asset('ball-hat.png')} alt="" className="hero hero-l" />
             <h3 className="font-display">Futebol</h3>
           </div>
           {FUTEBOL.map((p) => renderCard(p, 'left'))}
+          <div className="deco deco-l">
+            <img src={asset('tree.png')} alt="" className="deco-tree" />
+            <img src={asset('gifts.png')} alt="" className="deco-gifts" />
+          </div>
         </div>
 
         {/* Wheel */}
@@ -159,9 +202,13 @@ export default function App() {
         <div className="col col-r">
           <div className="col-head col-head-r">
             <h3 className="font-display">Padel</h3>
-            <img src={asset('racket.png')} alt="" className="hero hero-r" />
+            <img src={asset('racket-hat.png')} alt="" className="hero hero-r" />
           </div>
           {PADEL.map((p) => renderCard(p, 'right'))}
+          <div className="deco deco-r">
+            <img src={asset('gifts.png')} alt="" className="deco-gifts deco-gifts-r" />
+            <img src={asset('santa.png')} alt="" className="deco-santa" />
+          </div>
         </div>
 
         {/* Rules */}
@@ -191,12 +238,18 @@ export default function App() {
         </div>
         <div className="drink"><ShieldCheck size={16} /> Beba com responsabilidade</div>
 
+        <Snow flakes={SNOW_FRONT} front />
+
         {/* Result screen */}
         {showOverlay && winner && (
           <div className="overlay">
             {winner.isWin && <img src={asset('rays.png')} alt="" className="rays" />}
+            {winner.isWin && <img src={asset('santa.png')} alt="" className="result-santa" />}
+            {winner.isWin && <img src={asset('gifts.png')} alt="" className="result-gifts" />}
             <div className={`result ${winner.isWin ? (winner.award === 'Régua' ? 'result-win result-top' : 'result-win') : 'result-lose'}`}>
               <img src={asset(winner.isWin ? winner.icon! : miss.icon)} alt="" className="result-icon" />
+              <img src={asset('holly.png')} alt="" className="result-holly result-holly-l" />
+              <img src={asset('holly.png')} alt="" className="result-holly result-holly-r" />
               {winner.isWin ? (
                 <>
                   <h3 className="font-display shout gold-text">{winner.shout}</h3>
@@ -206,7 +259,7 @@ export default function App() {
                 </>
               ) : (
                 <>
-                  <h2 className="font-display shout shout-lose">{miss.shout}</h2>
+                  <h2 className={`font-display shout shout-lose ${miss.shout.length > 13 ? 'shout-long' : ''}`}>{miss.shout}</h2>
                   <p className="result-award result-award-lose">Tenta outra vez!</p>
                 </>
               )}

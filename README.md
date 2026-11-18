@@ -1,4 +1,4 @@
-# Roleta Cheers — Futebol & Padel
+# Roleta Cheers — Futebol & Padel · Edição de Natal
 
 Roleta de prémios para a TV do Cheers O Bar (Sports & Cocktail Bar).
 
@@ -7,4 +7,6 @@ Roleta de prémios para a TV do Cheers O Bar (Sports & Cocktail Bar).
 - Visual premium: bolas, raquetes, baliza, aro dourado e cenário são modelos 3D (three.js) renderizados uma única vez para imagens em `public/assets/`. A TV não corre 3D nenhum: só mostra imagens e roda uma delas com uma transformação CSS.
 - Para regenerar as imagens: `npm i --no-save three@0.169.0 && node scripts/render-3d.cjs && node scripts/compose-assets.cjs` (precisa de Playwright/Chromium).
 
-Versões anteriores: branch `desporto-2026` (desporto variado) e `halloween-2026`.
+- Edição de Natal: cenário nevado com árvores de Natal, prendas e luzes, Pai Natal 3D, gorros, azevinho e aro às riscas de bengala doce. A neve a cair e as luzes a piscar são CSS (só `transform`/`opacity`).
+
+Versões anteriores: branch `futebol-padel-2026` (sem Natal), `desporto-2026` (desporto variado) e `halloween-2026`.

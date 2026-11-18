@@ -23,8 +23,17 @@ const data = (f) => {
   return `data:image/${ext === 'jpg' ? 'jpeg' : ext};base64,${fs.readFileSync(path.join(CACHE, f)).toString('base64')}`;
 };
 
-// name -> [width, height]
+// name -> [width, height] or [width, height, output name]
 const RESIZE = {
+  'santa.png': [480, 548],
+  'tree.png': [400, 500],
+  'gifts.png': [500, 328],
+  'gift.png': [400, 400],
+  'coal.png': [400, 400],
+  'ball-hat.png': [400, 400],
+  'racket-hat.png': [400, 500],
+  'holly.png': [200, 200],
+  'hat.png': [300, 246],
   'ball.png': [400, 400],
   'padelball.png': [400, 400],
   'racket.png': [400, 500],
@@ -33,16 +42,16 @@ const RESIZE = {
   'goal-w.png': [500, 400],
   'corner-w.png': [400, 400],
   'net.png': [500, 328],
-  'rim.png': [960, 960],
-  'hub.png': [280, 280],
+  'rim-xmas.png': [960, 960, 'rim.png'],
+  'hub-xmas.png': [280, 280, 'hub.png'],
   'pointer.png': [160, 200],
 };
 
 // Slice i is centred at i*30+15 degrees clockwise from the top (same maths as the app).
 const SLICES = [
-  { kind: 'futebol', label: ['GOLO'], award: '3 FINOS', icon: 'ball.png', size: 150 },
+  { kind: 'futebol', label: ['GOLO'], award: '3 FINOS', icon: 'ball-hat.png', size: 165 },
   { kind: 'lose', ghost: 'padelball.png' },
-  { kind: 'padel', label: ['SMASH'], award: '3 FINOS', icon: 'racket.png', size: 170, h: 1.25 },
+  { kind: 'padel', label: ['SMASH'], award: '3 FINOS', icon: 'racket-hat.png', size: 170, h: 1.25 },
   { kind: 'lose', ghost: 'ball.png' },
   { kind: 'futebol', label: ['PENÁLTI'], award: '1 FINO', icon: 'goal-w.png', size: 215, h: 0.8 },
   { kind: 'lose', ghost: 'padelball.png' },
@@ -53,6 +62,13 @@ const SLICES = [
   { kind: 'padel', label: ['BANDEJA'], award: '1 FINO', icon: 'racket2.png', size: 170, h: 1.25 },
   { kind: 'lose', ghost: 'ball.png' },
 ];
+
+// gold snowflake (centred at 0,0, radius ~50)
+const FLAKE = (() => {
+  let arms = '';
+  for (let i = 0; i < 6; i++) arms += `<g transform="rotate(${i * 60})"><path d="M0 0 V-50 M0 -22 L-12 -34 M0 -22 L12 -34 M0 -36 L-9 -45 M0 -36 L9 -45"/></g>`;
+  return `<g fill="none" stroke="#ffe7b0" stroke-width="5" stroke-linecap="round">${arms}<circle r="7" fill="#ffe7b0" stroke="none"/></g>`;
+})();
 
 function wheelSVG() {
   const R = 600, seg = 30;
@@ -83,10 +99,10 @@ function wheelSVG() {
         <path d="${slicePath(60, R, 9)}" fill="url(#goldShine)"/>
         <path d="${sp}" fill="url(#sliceShadeSoft)"/>`;
     } else {
-      body = `<path d="${sp}" fill="#07090e"/>
-        <path d="${sp}" fill="url(#pCarbon)" opacity="0.75"/>
+      body = `<path d="${sp}" fill="url(#velvet)"/>
+        <path d="${sp}" fill="url(#pFlakes)" opacity="0.5"/>
         <path d="${sp}" fill="url(#loseShade)"/>
-        <image href="${data(s.ghost)}" x="-62" y="-502" width="124" height="124" opacity="0.2" style="filter:grayscale(1)"/>
+        <g transform="translate(0 -440) scale(1.25)" opacity="0.55">${FLAKE}</g>
         <text y="-318" class="lt">TENTA</text>
         <text y="-268" class="lt2">OUTRA VEZ</text>`;
     }
@@ -118,12 +134,15 @@ function wheelSVG() {
       .wtg{font-family:'Bebas Neue';fill:#2a1900;letter-spacing:2px;stroke:#fff3b8;stroke-opacity:.55;stroke-width:3px}
       .aw{font-family:'Oswald';font-weight:700;font-size:38px;fill:url(#goldText);letter-spacing:1px;stroke:#04060a;stroke-opacity:.8;stroke-width:8px}
       .awg{font-family:'Oswald';font-weight:700;font-size:48px;fill:#fff;letter-spacing:2px;stroke:#3a2400;stroke-width:9px}
-      .lt{font-family:'Bebas Neue';font-size:54px;fill:#d5dbe6;letter-spacing:4px}
-      .lt2{font-family:'Oswald';font-weight:700;font-size:28px;fill:#7f8aa0;letter-spacing:3px}
+      .lt{font-family:'Bebas Neue';font-size:54px;fill:#fff1ee;letter-spacing:4px;stroke:#3a0308;stroke-opacity:.6;stroke-width:6px}
+      .lt2{font-family:'Oswald';font-weight:700;font-size:28px;fill:#ffc9c2;letter-spacing:3px;stroke:#3a0308;stroke-opacity:.6;stroke-width:5px}
     </style>
-    <pattern id="pGrass" width="330" height="330" patternUnits="userSpaceOnUse"><image href="${data('tex-grass.jpg')}" width="330" height="330"/></pattern>
-    <pattern id="pPadel" width="330" height="330" patternUnits="userSpaceOnUse"><image href="${data('tex-padel.jpg')}" width="330" height="330"/></pattern>
-    <pattern id="pCarbon" width="64" height="64" patternUnits="userSpaceOnUse"><image href="${data('tex-carbon.png')}" width="64" height="64"/></pattern>
+    <pattern id="pGrass" width="330" height="330" patternUnits="userSpaceOnUse"><image href="${data('tex-snowgrass.jpg')}" width="330" height="330"/></pattern>
+    <pattern id="pPadel" width="330" height="330" patternUnits="userSpaceOnUse"><image href="${data('tex-snowpadel.jpg')}" width="330" height="330"/></pattern>
+    <pattern id="pFlakes" width="120" height="120" patternUnits="userSpaceOnUse"><g transform="translate(30 30) scale(0.22)" opacity="0.5">${FLAKE}</g><g transform="translate(90 90) scale(0.16)" opacity="0.4">${FLAKE}</g></pattern>
+    <radialGradient id="velvet" cx="0" cy="0" r="600" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3a0308"/><stop offset="0.55" stop-color="#8e0c18"/><stop offset="0.85" stop-color="#b3121f"/><stop offset="1" stop-color="#6a0610"/>
+    </radialGradient>
     <radialGradient id="mow" cx="0" cy="0" r="600" gradientUnits="userSpaceOnUse" spreadMethod="repeat">
       <stop offset="0" stop-color="#fff" stop-opacity="0.08"/><stop offset="0.0999" stop-color="#fff" stop-opacity="0.08"/>
       <stop offset="0.1" stop-color="#000" stop-opacity="0.14"/><stop offset="0.2" stop-color="#000" stop-opacity="0.14"/>
@@ -137,7 +156,7 @@ function wheelSVG() {
       <stop offset="0.88" stop-color="#2a1500" stop-opacity="0"/><stop offset="1" stop-color="#2a1500" stop-opacity="0.45"/>
     </radialGradient>
     <radialGradient id="loseShade" cx="0" cy="0" r="600" gradientUnits="userSpaceOnUse">
-      <stop offset="0.1" stop-color="#000" stop-opacity="0.85"/><stop offset="0.6" stop-color="#101827" stop-opacity="0.25"/><stop offset="1" stop-color="#000" stop-opacity="0.6"/>
+      <stop offset="0.1" stop-color="#000" stop-opacity="0.7"/><stop offset="0.6" stop-color="#000" stop-opacity="0.05"/><stop offset="1" stop-color="#000" stop-opacity="0.45"/>
     </radialGradient>
     <linearGradient id="goldBase" x1="-160" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#9a6a06"/><stop offset="0.3" stop-color="#f1c232"/><stop offset="0.5" stop-color="#fff2a8"/>
@@ -192,18 +211,18 @@ const FONTS = `<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&f
     console.log(file, (fs.statSync(out).size / 1024).toFixed(0) + 'KB');
   };
   // high-quality downscale of the supersampled 3D renders
-  for (const [file, [w, h]] of Object.entries(RESIZE)) {
+  for (const [file, [w, h, dest]] of Object.entries(RESIZE)) {
     await page.setViewportSize({ width: w, height: h });
     await page.setContent(`<!doctype html><style>html,body{margin:0;background:transparent}canvas{display:block}</style><canvas id="c" width="${w}" height="${h}"></canvas>`);
     await page.evaluate(async ([src, w, h]) => {
       const i = new Image(); i.src = src; await i.decode();
       const g = document.getElementById('c').getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(i, 0, 0, w, h);
     }, [data(file), w, h]);
-    const out = path.join(OUT, file);
+    const out = path.join(OUT, dest || file);
     await page.screenshot({ path: out, omitBackground: true, clip: { x: 0, y: 0, width: w, height: h } });
     console.log(file, (fs.statSync(out).size / 1024).toFixed(0) + 'KB');
   }
-  fs.copyFileSync(path.join(CACHE, 'scene.jpg'), path.join(OUT, 'scene.jpg'));
+  fs.copyFileSync(path.join(CACHE, 'scene-xmas.jpg'), path.join(OUT, 'scene.jpg'));
   await shot(wheelSVG(), 'wheel.jpg', 1200, 1200, 88);
   await shot(raysSVG(), 'rays.png', 800, 800);
   await browser.close();

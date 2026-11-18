@@ -53,30 +53,42 @@ body {
     radial-gradient(ellipse 46% 60% at 50% 55%, rgba(2, 4, 10, 0.82) 0%, rgba(2, 4, 10, 0.45) 60%, rgba(2, 4, 10, 0) 100%),
     linear-gradient(180deg, rgba(2, 4, 10, 0.3) 0%, rgba(2, 4, 10, 0) 22%);
 }
-.flashes { position: absolute; inset: 0; pointer-events: none; }
-.flash {
+.twinkles { position: absolute; inset: 0; pointer-events: none; }
+.twinkle {
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  background: #ffffff;
-  box-shadow: 0 0 10px 3px rgba(255, 255, 255, 0.8);
   opacity: 0;
-  animation: camflash 5s infinite;
-}
-.flood {
-  position: absolute;
-  top: -14%;
-  width: 42vw;
-  height: 42vw;
-  border-radius: 50%;
-  pointer-events: none;
-  background: radial-gradient(circle, rgba(255, 251, 230, 0.2) 0%, rgba(255, 251, 230, 0) 65%);
   will-change: opacity;
-  animation: flood 6s ease-in-out infinite;
+  animation: twinkle 4s ease-in-out infinite;
 }
-.flood-l { left: -8vw; }
-.flood-r { right: -8vw; animation-delay: 3s; }
+.tw-0 { background: #ff5a5a; box-shadow: 0 0 14px 5px rgba(255, 70, 70, 0.7); }
+.tw-1 { background: #ffd56a; box-shadow: 0 0 14px 5px rgba(255, 200, 90, 0.7); }
+.tw-2 { background: #6dff9a; box-shadow: 0 0 14px 5px rgba(80, 255, 140, 0.6); }
+.tw-3 { background: #ffffff; box-shadow: 0 0 14px 5px rgba(255, 255, 255, 0.7); }
+
+/* ---------- Snow (transform-only animation) ---------- */
+.snow { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.snow-front { left: -200px; right: -200px; top: -200px; bottom: -200px; z-index: 6; }
+.flake { position: absolute; top: -20px; will-change: transform; animation-name: fall; animation-timing-function: linear; animation-iteration-count: infinite; }
+.flake i { display: block; border-radius: 50%; background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.85) 45%, rgba(255, 255, 255, 0) 72%); }
+.sway-0 i { animation: sway 3.4s ease-in-out infinite; }
+.sway-1 i { animation: sway 4.6s ease-in-out infinite reverse; }
+.sway-2 i { animation: sway 5.8s ease-in-out infinite; }
+
+/* ---------- Garland of lights ---------- */
+.garland { position: absolute; left: 0; top: -14px; width: 1440px; height: 70px; pointer-events: none; z-index: 2; }
+.garland-wire { position: absolute; left: 0; top: 0; }
+.garland-grp { position: absolute; inset: 0; will-change: opacity; }
+.garland-a { animation: bulbBlink 1.6s steps(1) infinite; }
+.garland-b { animation: bulbBlink 1.6s steps(1) infinite 0.8s; }
+.gbulb { position: absolute; width: 12px; height: 18px; margin: -2px 0 0 -6px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; }
+.gbulb::before { content: ""; position: absolute; left: 3px; top: -4px; width: 6px; height: 5px; border-radius: 1px; background: #2a3a2c; }
+.gb-0 { background: radial-gradient(circle at 40% 35%, #fff 0%, #ff6b6b 40%, #c81e1e 100%); box-shadow: 0 0 16px 6px rgba(255, 60, 60, 0.6); }
+.gb-1 { background: radial-gradient(circle at 40% 35%, #fff 0%, #ffe08a 40%, #e0a51c 100%); box-shadow: 0 0 16px 6px rgba(255, 200, 80, 0.6); }
+.gb-2 { background: radial-gradient(circle at 40% 35%, #fff 0%, #7dffa6 40%, #16a34a 100%); box-shadow: 0 0 16px 6px rgba(60, 230, 120, 0.55); }
+.gb-3 { background: radial-gradient(circle at 40% 35%, #fff 0%, #9cc8ff 40%, #2563eb 100%); box-shadow: 0 0 16px 6px rgba(90, 150, 255, 0.55); }
 
 /* ---------- Header ---------- */
 .header { position: absolute; left: 0; right: 0; top: 8px; text-align: center; }
@@ -93,7 +105,10 @@ body {
   font-size: 14px;
   letter-spacing: 0.42em;
 }
-.live-dot { width: 9px; height: 9px; border-radius: 50%; background: #ef4444; animation: pulse 1.2s ease-in-out infinite; }
+.live-chip { background: linear-gradient(90deg, rgba(120, 8, 20, 0.92), rgba(4, 7, 14, 0.85) 30%, rgba(4, 7, 14, 0.85) 70%, rgba(10, 80, 35, 0.92)); position: relative; z-index: 3; }
+.xmas-star { color: #ffd56a; letter-spacing: 0; animation: pulse 1.4s ease-in-out infinite; }
+.title-c { position: relative; display: inline-block; }
+.title-hat { position: absolute; left: -26px; top: -46px; width: 92px; height: 75px; transform: rotate(-16deg); pointer-events: none; }
 .title-main { margin: 0; font-size: 96px; line-height: 0.92; letter-spacing: 0.07em; }
 
 /* ---------- Prize columns ---------- */
@@ -176,6 +191,21 @@ body {
   box-shadow: 0 0 12px 4px rgba(255, 226, 120, 0.75);
 }
 .pointer { z-index: 5; }
+.bulb-0 { background: radial-gradient(circle at 40% 35%, #ffffff 0%, #ff8a8a 45%, #dc2626 100%); box-shadow: 0 0 12px 4px rgba(255, 70, 70, 0.75); }
+.bulb-1 { background: radial-gradient(circle at 40% 35%, #ffffff 0%, #fff3b0 45%, #f5c542 100%); box-shadow: 0 0 12px 4px rgba(255, 226, 120, 0.75); }
+.bulb-2 { background: radial-gradient(circle at 40% 35%, #ffffff 0%, #9dffb9 45%, #16a34a 100%); box-shadow: 0 0 12px 4px rgba(70, 230, 120, 0.7); }
+.bulb-3 { background: radial-gradient(circle at 40% 35%, #ffffff 0%, #ffffff 45%, #dbe7ff 100%); box-shadow: 0 0 12px 4px rgba(230, 240, 255, 0.75); }
+
+/* ---------- Christmas decorations ---------- */
+.card-holly { position: absolute; left: -26px; top: -30px; width: 76px; height: 76px; z-index: 2; transform: rotate(-20deg); }
+.prize-card-right .card-holly { left: auto; right: -26px; transform: rotate(20deg) scaleX(-1); }
+.deco { position: absolute; top: 100%; height: 150px; width: 352px; pointer-events: none; }
+.deco-l .deco-tree { position: absolute; left: 0; bottom: -4px; width: 136px; height: 170px; }
+.deco-l .deco-gifts { position: absolute; left: 104px; bottom: -6px; width: 190px; height: 125px; }
+.deco-r .deco-santa { position: absolute; right: 4px; bottom: -8px; width: 154px; height: 176px; will-change: transform; animation: floaty 4s ease-in-out infinite; }
+.deco-r .deco-gifts-r { position: absolute; right: 136px; bottom: -6px; width: 190px; height: 125px; }
+.result-santa { position: absolute; left: 50%; top: 50%; width: 330px; height: 377px; margin: 30px 0 0 -760px; z-index: 2; will-change: transform; animation: floaty 3.4s ease-in-out infinite; }
+.result-gifts { position: absolute; left: 50%; top: 50%; width: 330px; height: 216px; margin: 170px 0 0 420px; z-index: 2; }
 
 /* ---------- Rules + sponsors ---------- */
 .rules {
@@ -224,7 +254,7 @@ body {
   animation: popIn 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards;
 }
 .result-win {
-  background: linear-gradient(180deg, #17203a 0%, #070a14 100%);
+  background: linear-gradient(180deg, #6a0b16 0%, #2a0409 60%, #12030a 100%);
   border: 3px solid #f5c542;
   box-shadow: 0 0 110px rgba(245, 197, 66, 0.45), inset 0 2px 0 rgba(255, 240, 180, 0.35);
 }
@@ -237,6 +267,7 @@ body {
 .result-icon { position: absolute; left: 50%; top: -150px; width: 300px; height: 290px; margin-left: -150px; object-fit: contain; will-change: transform; animation: floaty 3s ease-in-out infinite; }
 .shout { margin: 0; font-size: 104px; line-height: 0.95; letter-spacing: 0.04em; }
 .shout-lose { color: #ef4444; font-size: 128px; }
+.shout-long { font-size: 96px; }
 .result-small { margin: 10px 0 0; font-size: 24px; font-weight: 700; letter-spacing: 0.5em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); }
 .result-award { margin: 0; font-size: 128px; line-height: 1; font-weight: 900; font-style: italic; text-transform: uppercase; color: #fff; text-shadow: 0 6px 0 rgba(0, 0, 0, 0.45); }
 .result-award-lose { font-size: 44px; font-style: normal; letter-spacing: 0.12em; color: rgba(255, 255, 255, 0.65); margin-top: 10px; text-shadow: none; }
@@ -246,9 +277,15 @@ body {
 @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.22; } }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 @keyframes glow { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
-@keyframes camflash { 0%, 90%, 100% { opacity: 0; } 92% { opacity: 1; } 95% { opacity: 0; } }
-@keyframes flood { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+@keyframes twinkle { 0%, 100% { opacity: 0; } 50% { opacity: 0.9; } }
+@keyframes bulbBlink { 0% { opacity: 1; } 50% { opacity: 0.35; } }
+@keyframes fall { from { transform: translate3d(0, -20px, 0); } to { transform: translate3d(0, 112vh, 0); } }
+@keyframes sway { 0%, 100% { transform: translateX(-14px); } 50% { transform: translateX(14px); } }
 @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
 @keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.result-holly { position: absolute; width: 130px; height: 130px; z-index: 3; }
+.result-holly-l { left: -48px; top: -52px; transform: rotate(-24deg); }
+.result-holly-r { right: -48px; bottom: -52px; transform: rotate(156deg); }
